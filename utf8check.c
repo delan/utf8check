@@ -118,6 +118,7 @@ void parse_block(struct parser_state *state, unsigned char *buf,
 					(--(state->needed) * 6);
 			break;
 		}
+		state->offset++;
 	}
 }
 
