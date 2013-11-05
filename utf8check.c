@@ -54,6 +54,8 @@ void utf8check_parse(struct utf8check_state *state, uint8_t *buf, size_t len) {
 		case 1:
 			if (utf8check_type[buf[i]] == 0) {
 				utf8check_error(state, 2);
+				cp = buf[i];
+				utf8check_putchar(cp);
 				continue;
 			} else if (utf8check_type[buf[i]] > 1) {
 				utf8check_error(state, 3);
@@ -83,6 +85,8 @@ void utf8check_parse(struct utf8check_state *state, uint8_t *buf, size_t len) {
 		case 5:
 			if (utf8check_type[buf[i]] == 0) {
 				utf8check_error(state, 2);
+				cp = buf[i];
+				utf8check_putchar(cp);
 				continue;
 			} else if (utf8check_type[buf[i]] > 1) {
 				utf8check_error(state, 3);
