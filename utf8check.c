@@ -28,7 +28,11 @@ void utf8check_putchar(uint32_t c) {
 	}
 }
 
-void utf8check_parse(struct utf8check_state *state, uint8_t *buf, size_t len) {
+void utf8check_parse(
+	struct utf8check_state *state,
+	uint8_t *buf,
+	size_t len
+) {
 	int needed_start;
 	uint32_t cp;
 	size_t i;
@@ -59,6 +63,9 @@ void utf8check_parse(struct utf8check_state *state, uint8_t *buf, size_t len) {
 				continue;
 			} else if (utf8check_type[buf[i]] > 1) {
 				utf8check_error(state, 3);
+				state->needed = utf8check_type[buf[i]] - 1;
+				needed_start = state->needed;
+				cp = utf8check_initial[buf[i]];
 				continue;
 			} else {
 				cp |= buf[i] & 0x3f;
@@ -90,6 +97,9 @@ void utf8check_parse(struct utf8check_state *state, uint8_t *buf, size_t len) {
 				continue;
 			} else if (utf8check_type[buf[i]] > 1) {
 				utf8check_error(state, 3);
+				state->needed = utf8check_type[buf[i]] - 1;
+				needed_start = state->needed;
+				cp = utf8check_initial[buf[i]];
 				continue;
 			} else {
 				cp |= (buf[i] & 0x3f) <<
