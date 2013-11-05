@@ -70,6 +70,7 @@ void utf8check_parse(struct utf8check_state *state, uint8_t *buf, size_t len) {
 					utf8check_error(state, 5);
 					continue;
 				}
+				utf8check_putchar(cp);
 			}
 			break;
 		case 2:
