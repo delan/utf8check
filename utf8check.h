@@ -19,6 +19,16 @@ const char *const utf8check_errors[] = {
 	"unexpected EOF while waiting for a continuation byte",
 };
 
+const char *const utf8check_minierrs[] = {
+	"\033[31mI\033[m",
+	"\033[31mC\033[m",
+	"\033[31mA\033[m",
+	"\033[31mS\033[m",
+	"\033[31mP\033[m",
+	"\033[31mO\033[m",
+	"\033[31mE\033[m",
+};
+
 /*
 	Classification of octet values:
 
