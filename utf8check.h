@@ -3,10 +3,16 @@
 
 #include <stdio.h>
 #include <stdint.h>
+#include <string.h>
 
 struct utf8check_state {
 	size_t offset;
 	int needed;
+	enum {
+		UTF8CHECK_VALIDATE,
+		UTF8CHECK_INLINE,
+		UTF8CHECK_SANITISE
+	} mode;
 };
 
 const char *const utf8check_errors[] = {
