@@ -102,7 +102,6 @@ void parse_block(struct parser_state *state, unsigned char *buf,
 				state->needed = byte_type[buf[i]] - 1;
 				needed_start = state->needed;
 				cp = initial_cp[buf[i]];
-				putchar8(cp);
 			}
 			break;
 		case 1:
