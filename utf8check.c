@@ -2,7 +2,7 @@
 #include <stdint.h>
 
 #define ERROR(error) do {\
-		printf("%zu: %s\n", state->offset, errors[error]);\
+		fprintf(stderr, "%zu: %s\n", state->offset, errors[error]);\
 		state->needed = 0;\
 		continue;\
 	} while (0)
@@ -130,6 +130,6 @@ int main(void) {
 	while ((bufread = fread(buf, 1, 4096, stdin)))
 		parse_block(&state, buf, bufread);
 	if (state.needed)
-		puts(errors[6]);
+		fprintf(stderr, "%zu: %s\n", state.offset, errors[6]);
 	return 0;
 }
