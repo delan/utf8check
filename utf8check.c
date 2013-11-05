@@ -1,6 +1,7 @@
 #include "utf8check.h"
 
 void utf8check_error(struct utf8check_state *state, int errno) {
+	fflush(stdout);
 	fprintf(stderr, "[%zu %s]\n", state->offset, utf8check_errors[errno]);
 	state->needed = 0;
 	state->offset++;
