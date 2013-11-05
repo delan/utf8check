@@ -62,7 +62,7 @@ void utf8check_parse(struct utf8check_state *state, uint8_t *buf, size_t len) {
 				cp |= buf[i] & 0x3f;
 				state->needed = 0;
 				if (
-					(cp > 0x110000) ||
+					(cp > 0x10FFFF) ||
 					((cp >= 0xfdd0) && (cp <= 0xfdef)) ||
 					((cp & 0xfffe) == 0xfffe) ||
 					((cp & 0xfffff800) == 0xd800)
