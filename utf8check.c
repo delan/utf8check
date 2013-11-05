@@ -68,6 +68,24 @@ uint32_t initial_cp[256] = {
 
 uint32_t min_cp[6] = { 0, 0x80, 0x800, 0x10000, 0x200000, 0x4000000 };
 
+void putchar8(uint32_t c) {
+	if (c < 0x80) {
+		putchar(c);
+	} else if (c < 0x800) {
+		putchar((c >> 6) | 0xc0);
+		putchar((c & 0x3f) | 0x80);
+	} else if (c < 0x10000) {
+		putchar((c >> 12) | 0xe0);
+		putchar((c >> 6 & 0x3f) | 0x80);
+		putchar((c & 0x3f) | 0x80);
+	} else {
+		putchar((c >> 18) | 0xf0);
+		putchar((c >> 12 & 0x3f) | 0x80);
+		putchar((c >> 6 & 0x3f) | 0x80);
+		putchar((c & 0x3f) | 0x80);
+	}
+}
+
 void parse_block(struct parser_state *state, unsigned char *buf,
 	size_t len) {
 	int needed_start;
@@ -84,6 +102,7 @@ void parse_block(struct parser_state *state, unsigned char *buf,
 				state->needed = byte_type[buf[i]] - 1;
 				needed_start = state->needed;
 				cp = initial_cp[buf[i]];
+				putchar8(cp);
 			}
 			break;
 		case 1:
