@@ -43,8 +43,8 @@ void utf8check_parse(
 	uint8_t *buf,
 	size_t len
 ) {
-	int needed_start;
-	uint32_t cp;
+	int *needed_start = &state->needed_start;
+	uint32_t *cp = &state->cp;
 	size_t i;
 	for (i = 0; i < len; i++) {
 		if (utf8check_type[buf[i]] == 7) {
@@ -58,42 +58,42 @@ void utf8check_parse(
 				continue;
 			} else if (utf8check_type[buf[i]] != 0) {
 				state->needed = utf8check_type[buf[i]] - 1;
-				needed_start = state->needed;
-				cp = utf8check_initial[buf[i]];
+				*needed_start = state->needed;
+				*cp = utf8check_initial[buf[i]];
 			} else if (utf8check_type[buf[i]] == 0) {
-				cp = buf[i];
-				utf8check_putchar(state, cp);
+				*cp = buf[i];
+				utf8check_putchar(state, *cp);
 			}
 			break;
 		case 1:
 			if (utf8check_type[buf[i]] == 0) {
 				utf8check_error(state, 2);
-				cp = buf[i];
-				utf8check_putchar(state, cp);
+				*cp = buf[i];
+				utf8check_putchar(state, *cp);
 				continue;
 			} else if (utf8check_type[buf[i]] > 1) {
 				utf8check_error(state, 3);
 				state->needed = utf8check_type[buf[i]] - 1;
-				needed_start = state->needed;
-				cp = utf8check_initial[buf[i]];
+				*needed_start = state->needed;
+				*cp = utf8check_initial[buf[i]];
 				continue;
 			} else {
-				cp |= buf[i] & 0x3f;
+				*cp |= buf[i] & 0x3f;
 				state->needed = 0;
 				if (
-					(cp > 0x10FFFF) ||
-					((cp >= 0xfdd0) && (cp <= 0xfdef)) ||
-					((cp & 0xfffe) == 0xfffe) ||
-					((cp & 0xfffff800) == 0xd800)
+					(*cp > 0x10FFFF) ||
+					((*cp >= 0xfdd0) && (*cp <= 0xfdef)) ||
+					((*cp & 0xfffe) == 0xfffe) ||
+					((*cp & 0xfffff800) == 0xd800)
 				) {
 					utf8check_error(state, 4);
 					continue;
 				}
-				if (cp < utf8check_min[needed_start]) {
+				if (*cp < utf8check_min[*needed_start]) {
 					utf8check_error(state, 5);
 					continue;
 				}
-				utf8check_putchar(state, cp);
+				utf8check_putchar(state, *cp);
 			}
 			break;
 		case 2:
@@ -102,17 +102,17 @@ void utf8check_parse(
 		case 5:
 			if (utf8check_type[buf[i]] == 0) {
 				utf8check_error(state, 2);
-				cp = buf[i];
-				utf8check_putchar(state, cp);
+				*cp = buf[i];
+				utf8check_putchar(state, *cp);
 				continue;
 			} else if (utf8check_type[buf[i]] > 1) {
 				utf8check_error(state, 3);
 				state->needed = utf8check_type[buf[i]] - 1;
-				needed_start = state->needed;
-				cp = utf8check_initial[buf[i]];
+				*needed_start = state->needed;
+				*cp = utf8check_initial[buf[i]];
 				continue;
 			} else {
-				cp |= (buf[i] & 0x3f) <<
+				*cp |= (buf[i] & 0x3f) <<
 					(--(state->needed) * 6);
 			}
 			break;

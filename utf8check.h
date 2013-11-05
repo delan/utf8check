@@ -8,6 +8,8 @@
 struct utf8check_state {
 	size_t offset;
 	int needed;
+	int needed_start;
+	uint32_t cp;
 	enum {
 		UTF8CHECK_VALIDATE,
 		UTF8CHECK_INLINE,
