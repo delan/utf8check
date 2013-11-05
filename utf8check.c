@@ -2,13 +2,13 @@
 #include <stdint.h>
 
 #define ERROR(error) do {\
-		printf("%jd: %s\n", state->offset, errors[error]);\
+		printf("%zu: %s\n", state->offset, errors[error]);\
 		state->needed = 0;\
 		continue;\
 	} while (0)
 
 struct parser_state {
-	intmax_t offset;
+	size_t offset;
 	int needed;
 };
 
@@ -69,12 +69,11 @@ uint32_t initial_cp[256] = {
 uint32_t min_cp[6] = { 0, 0x80, 0x800, 0x10000, 0x200000, 0x4000000 };
 
 void parse_block(struct parser_state *state, unsigned char *buf,
-	intmax_t len) {
+	size_t len) {
 	int needed_start;
 	uint32_t cp;
-	intmax_t i;
+	size_t i;
 	for (i = 0; i < len; i++) {
-		state->offset++;
 		if (byte_type[buf[i]] == 7)
 			ERROR(0);
 		switch (state->needed) {
@@ -119,13 +118,15 @@ void parse_block(struct parser_state *state, unsigned char *buf,
 					(--(state->needed) * 6);
 			break;
 		}
+		if (i < len - 1)
+			state->offset++;
 	}
 }
 
 int main(void) {
 	size_t bufread;
 	unsigned char buf[4096];
-	struct parser_state state = { -1, 0 };
+	struct parser_state state = { 0 };
 	while ((bufread = fread(buf, 1, 4096, stdin)))
 		parse_block(&state, buf, bufread);
 	if (state.needed)
