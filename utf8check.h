@@ -4,12 +4,12 @@
 #include <stdio.h>
 #include <stdint.h>
 
-struct parser_state {
+struct utf8check_state {
 	size_t offset;
 	int needed;
 };
 
-const char *const errors[] = {
+const char *const utf8check_errors[] = {
 	"invalid byte (0xFE or 0xFF)",
 	"unexpected continuation byte; ASCII or start byte expected",
 	"unexpected ASCII byte; continuation byte expected",
@@ -19,7 +19,20 @@ const char *const errors[] = {
 	"unexpected EOF while waiting for a continuation byte",
 };
 
-int byte_type[256] = {
+/*
+	Classification of octet values:
+
+	0	single-byte ASCII character
+	1	continuation byte
+	2	start of 2-byte sequence
+	3	start of 3-byte sequence
+	4	start of 4-byte sequence
+	5	start of 5-byte sequence
+	6	start of 6-byte sequence
+	7	invalid byte (0xFE or 0xFF)
+*/
+
+const int utf8check_type[] = {
 	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
 	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
 	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
@@ -38,7 +51,9 @@ int byte_type[256] = {
 	4, 4, 4, 4, 4, 4, 4, 4, 5, 5, 5, 5, 6, 6, 7, 7
 };
 
-uint32_t initial_cp[256] = {
+/* Base codepoints for starting bytes */
+
+const uint32_t utf8check_initial[] = {
 	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
 	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
 	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
@@ -63,6 +78,10 @@ uint32_t initial_cp[256] = {
 	0,		0x40000000,	0,		0
 };
 
-uint32_t min_cp[6] = { 0, 0x80, 0x800, 0x10000, 0x200000, 0x4000000 };
+/* Minimum codepoints by sequence length for overlong sequence check */
+
+const uint32_t utf8check_min[] = {
+	0, 0x80, 0x800, 0x10000, 0x200000, 0x4000000
+};
 
 #endif
